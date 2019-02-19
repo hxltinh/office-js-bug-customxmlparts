@@ -1,4 +1,5 @@
 # Reproduce OfficeJs Dialog bugs
+Adding large content to CustomXMLPart triggers error on most browser except Firefox
 
 ### Install certificate on Windows
  1. In the certs folder just double-click the server.crt and install it to the user trusted root certificates
