@@ -1,0 +1,15 @@
+{
+  "name": "office-bug-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node live-server"
+  },
+  "author": "Tinh Ha",
+  "license": "ISC",
+  "devDependencies": {
+    "live-server": "1.2.1",
+    "yargs": "12.0.2"
+  }
+}

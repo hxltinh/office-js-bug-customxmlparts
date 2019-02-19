@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Office bug</title>
+        <script src="https://appsforoffice.microsoft.com/lib/1/hosted/Office.js" type="text/javascript"></script>
+    </head>
+
+    <body>
+        <div>write base64 content from files to CustomXMLParts</div>
+        <br/>
+        <button id="large-file-loading-btn">
+            <span>Large file</span>
+        </button>
+        <button id="small-file-loading-btn">
+            <span>Small file</span>
+        </button>
+        <br/>
+        <br/>
+        <br/>
+        <div>swritting status: <span id="writting-status"></span></div>
+
+        <script type="text/javascript">
+            Office.initialize = function() {
+                const xmlns = 'images';
+
+                const writtingStatusSpan = document.getElementById('writting-status');
+                const largeFileLoadingBtn = document.getElementById('large-file-loading-btn');
+                const smallFileLoadingBtn = document.getElementById('small-file-loading-btn');
+
+                largeFileLoadingBtn.addEventListener('click',() => {
+                    const imgUrl = 'https://local.office:9999/bmps/large.bmp';
+
+                    writeContentToCustomXMLParts(imgUrl);
+                });
+
+                smallFileLoadingBtn.addEventListener('click',() => {
+                    const imgUrl = 'https://local.office:9999/bmps/small.bmp';
+
+                    writeContentToCustomXMLParts(imgUrl);
+                });
+
+                function writeContentToCustomXMLParts(url) {
+                    loadBase64Image(url)
+                        .then(loadedBase64Image => Office.context.document.customXmlParts.addAsync(
+                                    `<root xmlns="${xmlns}"><item>${loadedBase64Image}</item></root>`,
+                                    result => {
+                                        console.log(`result of adding ${url}`, result);
+                                        writtingStatusSpan.innerHTML = result.status;
+                                    }
+                                )
+                        );
+                }
+
+                function loadBase64Image(url) {
+                    return fetch(url)
+                        .then(response => response.blob())
+                        .then(blob => new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onloadend = () => resolve(reader.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(blob);
+                        }));
+                }
+            }
+        </script>
+    </body>
+
+</html>
